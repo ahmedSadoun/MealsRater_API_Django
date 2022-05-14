@@ -30,6 +30,7 @@ class Rating(models.Model):
     stars = models.IntegerField(validators=[MinValueValidator(1) , MaxValueValidator(5)])
     # def __str__(self):
     #     return self.meal
+    #the user can rate a meal just one time ,the next time an elegant error is being thrwon 
     class Meta:
         unique_together=(('user','meal'),)
         index_together=(('user','meal'),)
