@@ -1,6 +1,10 @@
 
+from ctypes import cast
+from email.policy import default
+import os as os
 from pathlib import Path
-
+from decouple import config
+from dj_database_url import parse as dburl
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -9,14 +13,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-2ycnvwj^))ze8coszh%n2iem@x#hr*tmsd*wv0-pl-_ur+hk1^'
-
+#SECRET_KEY = 'django-insecure-2ycnvwj^))ze8coszh%n2iem@x#hr*tmsd*wv0-pl-_ur+hk1^'
+SECRET_KEY=config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG')
 
-ALLOWED_HOSTS = []
-
-
+ALLOWED_HOSTS = ['127.0.0.1','.localhost','mealrater.herokuapp.com']
 # Application definition
 
 INSTALLED_APPS = [
@@ -27,6 +29,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'corsheaders',
     'rest_framework.authtoken',
     'api',
 ]
@@ -39,12 +42,20 @@ REST_FRAMEWORK={
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+CORS_ALLOWED_ORIGINS=[ "https://example.com",
+    "https://sub.example.com",
+    "https://localhost:8080",
+    "https://127.0.0.1:9000",]
+   
+
 
 ROOT_URLCONF = 'mealrater.urls'
 
@@ -69,13 +80,19 @@ WSGI_APPLICATION = 'mealrater.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
-
+default_dburl='sqlite:///'+ os.path.join(BASE_DIR , 'db.sqlite3')
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': config('DATABASE_URL',default=default_dburl,cast=dburl)
 }
+
+#original 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 
 
 # Password validation

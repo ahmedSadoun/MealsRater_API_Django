@@ -1,0 +1,3 @@
+- requirements_local.txt
+gunicorn
+psycopg
